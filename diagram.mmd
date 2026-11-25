@@ -1,0 +1,20 @@
+flowchart TB
+    USER["カガミカミさん"]
+    subgraph EXT["外部サービス"]
+        CIV["Civitai（civitai.red）<br/>公式API"]
+    end
+    CON["custom.civitai コネクタ<br/>最小権限・読み取り中心"]
+    subgraph SPACE["Space「Anima × MOSS-Image おすすめカタログ」"]
+        ACT["週次更新アクション<br/>1週間分の新着を取得"]
+        RULE["分類ルール<br/>6区分・DL数順・最大20件"]
+        DB[("SQLite<br/>「号」として保存")]
+        UI["閲覧画面<br/>カード表示／看板カバー／拡大表示"]
+        ACT --> RULE --> DB --> UI
+    end
+    CRON["スケジューラ<br/>毎週金曜 21:00"]
+    NOTE["メインチャットへ告知"]
+    CIV --> CON --> ACT
+    CRON -->|更新を起動| ACT
+    CRON -->|完了したら| NOTE
+    UI --> USER
+    NOTE --> USER
